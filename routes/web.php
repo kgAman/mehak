@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\ScheduleVisitController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +20,7 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+Route::post('/inquiry-submit', [InquiryController::class, 'submit'])->name('inquiry.submit');
 
 Route::get('/services', function () {
     return view('services');
@@ -38,6 +41,7 @@ Route::get('/testimonials', function () {
 Route::get('/booking', function () {
     return view('booking');
 })->name('booking');
+Route::post('/schedule-visit', [ScheduleVisitController::class, 'submit'])->name('schedule.submit');
 
 
 Route::get('/dashboard', function () {

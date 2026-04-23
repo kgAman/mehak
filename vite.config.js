@@ -8,7 +8,6 @@ export default defineConfig({
             input: [
                 'resources/css/app.css', 
                 'resources/js/app.js',
-                'resources/js/gallery.jsx' // Add your new bridge file here
             ],
             refresh: true,
         }),
