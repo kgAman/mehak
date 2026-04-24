@@ -92,51 +92,71 @@
                         </div>
                         <div class="flex items-center gap-3 text-gray-400 hover:text-amber-500 transition-colors">
                             <i data-lucide="mail" class="w-5 h-5"></i>
-                            <span class="font-bold tracking-wider">quotes@propertymaint.com.au</span>
+                            <span class="font-bold tracking-wider">info@mehak.au</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="relative z-10">
-                    <form action="#" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <form action="{{ route('contact.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf 
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Full Name <span class="text-amber-500">*</span></label>
-                            <input type="text" name="name" required class="block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
+                            <input type="text" name="full_name" required class=" @error('full_name') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
+                            <!-- Validation error message -->
+                            @error('full_name')
+                                <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Email Address <span class="text-amber-500">*</span></label>
-                            <input type="email" name="email" required class="block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
+                            <input type="email" name="email_address" required class=" @error('email_address') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
+                            <!-- Validation error message -->
+                            @error('email_address')
+                                <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Service Required <span class="text-amber-500">*</span></label>
-                            <select name="service" class="block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
+                            <select name="service_required" class=" @error('service_required') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
                                 <option class="bg-slate-800 text-white">General Carpentry</option>
                                 <option class="bg-slate-800 text-white">Insurance Repair</option>
                                 <option class="bg-slate-800 text-white">Flooring (Hybrid/Laminate)</option>
                                 <option class="bg-slate-800 text-white">Doors & Hardware</option>
                                 <option class="bg-slate-800 text-white">Other</option>
                             </select>
+                            <!-- Validation error message -->
+                            @error('service_required')
+                                <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Project Details <span class="text-amber-500">*</span></label>
-                            <textarea name="message" rows="4" placeholder="Describe the damage or work required..." class="block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors"></textarea>
+                            <textarea name="project_details" rows="4" placeholder="Describe the damage or work required..." class=" @error('project_details') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors"></textarea>
+                            <!-- Validation error message -->
+                            @error('project_details')
+                                <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         
                         <div class="relative bg-slate-800 border-2 border-dashed border-slate-600 p-4 rounded-sm hover:border-amber-500 transition-colors group">
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-3 flex items-center gap-2">
                                 <i data-lucide="camera" class="w-4 h-4 text-amber-500"></i> Attach Site Photos (Optional)
                             </label>
-                            <input type="file" name="photo" accept="image/*" class="block w-full text-sm text-gray-400 
+                            <input type="file" name="site_photo" accept="image/*" class=" @error('site_photo') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full text-sm text-gray-400 
                                 file:mr-4 file:py-2.5 file:px-4 
                                 file:rounded-sm file:border-0 
                                 file:text-xs file:font-bold file:uppercase file:tracking-widest 
                                 file:bg-slate-700 file:text-amber-500 
                                 hover:file:bg-slate-600 file:cursor-pointer cursor-pointer transition-colors">
+                            <!-- Validation error message -->
+                            @error('site_photo')
+                                <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         
                         <button type="submit" class="w-full inline-flex justify-center items-center gap-3 rounded-sm bg-amber-500 px-8 py-4 text-base font-black font-['Montserrat',_sans-serif] text-slate-900 shadow-[4px_4px_0px_0px_#475569] hover:shadow-[2px_2px_0px_0px_#475569] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 uppercase tracking-widest mt-4">
