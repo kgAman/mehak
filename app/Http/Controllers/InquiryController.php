@@ -8,6 +8,18 @@ use Illuminate\Support\Facades\Storage;
 
 class InquiryController extends Controller
 {
+    public function index()
+    {
+        $inquiries = Inquiry::latest()->get();
+        return view('admin.inquiries.index', compact('inquiries'));
+    }
+
+    public function show($id)
+    {
+        $inquiry = Inquiry::findOrFail($id);
+        return view('admin.inquiries.show', compact('inquiry'));
+    }
+
     public function submit(Request $request)
     {
         $validated = $request->validate([

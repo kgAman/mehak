@@ -9,6 +9,18 @@ use App\Mail\VisitConfirmation;
 
 class ScheduleVisitController extends Controller
 {
+    public function index()
+    {
+        $visits = ScheduledVisit::orderBy('preferred_date', 'desc')->get();
+        return view('admin.visits.index', compact('visits'));
+    }
+
+    public function show($id)
+    {
+        $visit = ScheduledVisit::findOrFail($id);
+        return view('admin.visits.show', compact('visit'));
+    }
+
     public function submit(Request $request)
     {
         $validated = $request->validate([
@@ -28,12 +40,6 @@ class ScheduleVisitController extends Controller
         // Mail::to($visit->email_address)->send(new VisitConfirmation($visit));
 
         return redirect()->back()->with('success', 'Your site visit has been scheduled successfully! We will contact you shortly to confirm.');
-    }
-
-    public function index()
-    {
-        $visits = ScheduledVisit::orderBy('preferred_date', 'desc')->get();
-        return view('admin.visits', compact('visits'));
     }
 
     public function updateStatus(Request $request, $id)
