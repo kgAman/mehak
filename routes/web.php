@@ -20,7 +20,7 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
-Route::post('/inquiry-submit', [InquiryController::class, 'submit'])->name('inquiry.submit');
+Route::post('/contact-submit', [InquiryController::class, 'submit'])->name('contact.submit');
 
 Route::get('/services', function () {
     return view('services');
@@ -41,7 +41,7 @@ Route::get('/testimonials', function () {
 Route::get('/booking', function () {
     return view('booking');
 })->name('booking');
-Route::post('/schedule-visit', [ScheduleVisitController::class, 'submit'])->name('schedule.submit');
+Route::post('/booking-visit', [ScheduleVisitController::class, 'submit'])->name('booking.submit');
 
 
 Route::get('/dashboard', function () {
