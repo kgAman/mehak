@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Inquiry;
-use App\Models\ScheduleVisit;
+use App\Models\ScheduledVisit;
 use App\Models\User;
 use App\Models\Gallery;
 use App\Models\Portfolio;
@@ -18,7 +18,7 @@ class DashboardController extends Controller
     {
         $dashboardData = [
             'inquiries' => Inquiry::count(),
-            'bookings' => ScheduleVisit::count(),
+            'bookings' => ScheduledVisit::count(),
             'users' => User::count(),
             'galleries' => Gallery::count(),
             'portfolios' => Portfolio::count(),
@@ -26,7 +26,7 @@ class DashboardController extends Controller
             'services' => Service::count(),
             'abouts' => About::count(),
             'latestInquiries' => Inquiry::latest()->take(5)->get(),
-            'latestBookings' => ScheduleVisit::latest()->take(5)->get(),
+            'latestBookings' => ScheduledVisit::latest()->take(5)->get(),
         ];
         return view('admin.dashboard', compact('dashboardData'));
     }

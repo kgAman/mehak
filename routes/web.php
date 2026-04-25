@@ -3,6 +3,13 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\ScheduleVisitController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GalleryAdminController;
+use App\Http\Controllers\PortfolioAdminController;
+use App\Http\Controllers\TestimonialsAdminController;
+use App\Http\Controllers\ServicesAdminController;
+use App\Http\Controllers\AboutAdminController;
+use App\Http\Controllers\ContactAdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {

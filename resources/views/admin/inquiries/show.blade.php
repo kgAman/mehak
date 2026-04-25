@@ -1,3 +1,7 @@
 <x-app-layout>
-    {{ json_encode($inquiry) }}
+    <pre>
+        <code>
+{!! json_encode($inquiry, JSON_PRETTY_PRINT) !!}
+        </code>
+    </pre>
 </x-app-layout>

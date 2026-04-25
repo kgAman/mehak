@@ -11,7 +11,11 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
 
-                    {!! json_encode($dashboardData) !!}
+                    <pre>
+                        <code>
+{!! json_encode($dashboardData, JSON_PRETTY_PRINT) !!}
+                        </code>
+                    </pre>
                 </div>
             </div>
         </div>

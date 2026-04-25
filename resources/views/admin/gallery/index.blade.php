@@ -1,7 +1,7 @@
 <x-app-layout>
     <pre>
         <code>
-{!! json_encode($inquiries, JSON_PRETTY_PRINT) !!}
+{!! json_encode($galleries, JSON_PRETTY_PRINT) !!}
         </code>
     </pre>
 </x-app-layout>
