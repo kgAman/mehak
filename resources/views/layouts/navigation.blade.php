@@ -108,13 +108,6 @@
                         <button type="submit" class="w-full text-left {{ $mobileNavClasses }} border-transparent text-gray-400 hover:text-amber-500 hover:bg-slate-800">Log Out</button>
                     </form>
                 </div>
-            @else
-                <div class="space-y-1">
-                    <a href="{{ route('login') }}" class="{{ $mobileNavClasses }} {{ request()->routeIs('login') ? $mobileActive : $mobileInactive }}">Log in</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="{{ $mobileNavClasses }} {{ request()->routeIs('register') ? $mobileActive : $mobileInactive }}">Register</a>
-                    @endif
-                </div>
             @endauth
         </div>
     </div>
