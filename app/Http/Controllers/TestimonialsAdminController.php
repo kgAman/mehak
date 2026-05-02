@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 class TestimonialsAdminController extends Controller
 {
     public function index()
     {
-        $testimonials = Testimonial::paginate(10);
+$testimonials = Testimonial::latest()->paginate(10);
         return view('admin.testimonials.index', compact('testimonials'));
     }
 

@@ -16,7 +16,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $dashboardData = [
+       return view('admin.dashboard', [
             'inquiries' => Inquiry::count(),
             'bookings' => ScheduledVisit::count(),
             'users' => User::count(),
@@ -27,7 +27,6 @@ class DashboardController extends Controller
             'abouts' => About::count(),
             'latestInquiries' => Inquiry::latest()->take(5)->get(),
             'latestBookings' => ScheduledVisit::latest()->take(5)->get(),
-        ];
-        return view('admin.dashboard', compact('dashboardData'));
+        ]);
     }
 }

@@ -12,7 +12,8 @@ class ScheduleVisitController extends Controller
     public function index()
     {
         $visits = ScheduledVisit::orderBy('preferred_date', 'desc')->get();
-        return view('admin.visits.index', compact('visits'));
+        $bookings = ScheduledVisit::orderBy('created_at', 'desc')->paginate(15);
+        return view('admin.visits.index', compact('visits', 'bookings'));
     }
 
     public function show($id)

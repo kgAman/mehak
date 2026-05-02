@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ServicesAdminController extends Controller
 {
     public function index()
     {
-        $services = Service::paginate(10);
+        $services = Service::latest()->paginate(10);
         return view('admin.services.index', compact('services'));
     }
 
@@ -22,23 +23,12 @@ class ServicesAdminController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:50',
-            'short_description' => 'nullable|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'boolean',
-            'order' => 'nullable|integer',
+            'title'   => 'required|string|max:255',
+            'icon'    => 'required|string|max:100',
+            'content' => 'required|string', // FIXED: Changed 'description' to 'content'
         ]);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('services', 'public');
-            $validated['image'] = $imagePath;
-        }
-
-        $validated['is_active'] = $request->has('is_active');
-
-        Service::create($validated);
+        \App\Models\Service::create($validated);
 
         return redirect()->route('admin.services-admin.index')
             ->with('success', 'Service created successfully.');
@@ -61,24 +51,11 @@ class ServicesAdminController extends Controller
         $service = Service::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:50',
-            'short_description' => 'nullable|string|max:255',
-            'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'boolean',
-            'order' => 'nullable|integer',
+            'title'   => 'required|string|max:255',
+            'icon'    => 'required|string|max:100',
+            'content' => 'required|string', // FIXED: Changed 'description' to 'content'
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($service->image) {
-                \Storage::disk('public')->delete($service->image);
-            }
-            $imagePath = $request->file('image')->store('services', 'public');
-            $validated['image'] = $imagePath;
-        }
-
-        $validated['is_active'] = $request->has('is_active');
         $service->update($validated);
 
         return redirect()->route('admin.services-admin.index')
@@ -90,7 +67,7 @@ class ServicesAdminController extends Controller
         $service = Service::findOrFail($id);
         
         if ($service->image) {
-            \Storage::disk('public')->delete($service->image);
+            Storage::disk('public')->delete($service->image);
         }
         
         $service->delete();

@@ -63,7 +63,8 @@
 
         <div class="max-w-[96rem] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-            <div class="flex flex-wrap justify-center gap-4 mb-16">
+            <div class="w-full flex flex-row flex-wrap items-center justify-center gap-4 mb-16 border-b border-slate-800 pb-8">
+                
                 <button @click="filter = 'all'" 
                         :class="filter === 'all' ? 'bg-amber-500 text-slate-900 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-slate-900 text-gray-400 border-slate-700 hover:border-amber-500 hover:text-amber-500'"
                         class="px-8 py-3 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm border-2 rounded-sm transition-all duration-300 flex items-center gap-2">
