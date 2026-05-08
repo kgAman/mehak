@@ -98,13 +98,19 @@
                 </div>
 
                 <div class="relative z-10">
+                    @if(session('success'))
+                        <div class="mb-6 bg-green-500/10 border border-green-500 p-4 rounded-sm flex items-center gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                            <p class="text-green-500 font-bold uppercase tracking-widest text-xs">{{ session('success') }}</p>
+                        </div>
+                    @endif
+
                     <form action="{{ route('contact.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf 
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Full Name <span class="text-amber-500">*</span></label>
-                            <input type="text" name="full_name" required class=" @error('full_name') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                            <!-- Validation error message -->
+                            <input type="text" name="full_name" value="{{ old('full_name') }}" required class=" @error('full_name') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
                             @error('full_name')
                                 <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -112,8 +118,7 @@
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Email Address <span class="text-amber-500">*</span></label>
-                            <input type="email" name="email_address" required class=" @error('email_address') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                            <!-- Validation error message -->
+                            <input type="email" name="email_address" value="{{ old('email_address') }}" required class=" @error('email_address') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
                             @error('email_address')
                                 <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -122,13 +127,12 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Service Required <span class="text-amber-500">*</span></label>
                             <select name="service_required" class=" @error('service_required') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                <option class="bg-slate-800 text-white">General Carpentry</option>
-                                <option class="bg-slate-800 text-white">Insurance Repair</option>
-                                <option class="bg-slate-800 text-white">Flooring (Hybrid/Laminate)</option>
-                                <option class="bg-slate-800 text-white">Doors & Hardware</option>
-                                <option class="bg-slate-800 text-white">Other</option>
+                                <option value="General Carpentry" {{ old('service_required') == 'General Carpentry' ? 'selected' : '' }} class="bg-slate-800 text-white">General Carpentry</option>
+                                <option value="Insurance Repair" {{ old('service_required') == 'Insurance Repair' ? 'selected' : '' }} class="bg-slate-800 text-white">Insurance Repair</option>
+                                <option value="Flooring (Hybrid/Laminate)" {{ old('service_required') == 'Flooring (Hybrid/Laminate)' ? 'selected' : '' }} class="bg-slate-800 text-white">Flooring (Hybrid/Laminate)</option>
+                                <option value="Doors & Hardware" {{ old('service_required') == 'Doors & Hardware' ? 'selected' : '' }} class="bg-slate-800 text-white">Doors & Hardware</option>
+                                <option value="Other" {{ old('service_required') == 'Other' ? 'selected' : '' }} class="bg-slate-800 text-white">Other</option>
                             </select>
-                            <!-- Validation error message -->
                             @error('service_required')
                                 <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -136,8 +140,7 @@
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Project Details <span class="text-amber-500">*</span></label>
-                            <textarea name="project_details" rows="4" placeholder="Describe the damage or work required..." class=" @error('project_details') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors"></textarea>
-                            <!-- Validation error message -->
+                            <textarea name="project_details" rows="4" placeholder="Describe the damage or work required..." class=" @error('project_details') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">{{ old('project_details') }}</textarea>
                             @error('project_details')
                                 <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
@@ -153,7 +156,6 @@
                                 file:text-xs file:font-bold file:uppercase file:tracking-widest 
                                 file:bg-slate-700 file:text-amber-500 
                                 hover:file:bg-slate-600 file:cursor-pointer cursor-pointer transition-colors">
-                            <!-- Validation error message -->
                             @error('site_photo')
                                 <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
                             @enderror

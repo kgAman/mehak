@@ -12,7 +12,7 @@ class Gallery extends Model
     protected $fillable = [
         'title',
         'image',
-        'description',
+        'category', // Changed from description to category
         'order',
         'is_active'
     ];

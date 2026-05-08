@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('client_name');
             $table->string('client_position')->nullable();
             $table->string('client_company')->nullable();
+            $table->string('category')->nullable(); // <-- ADDED THIS LINE
             $table->text('content');
             $table->integer('rating')->nullable();
             $table->string('client_image')->nullable();

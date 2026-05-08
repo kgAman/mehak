@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('galleries', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable(); // FIXED: Made title optional
+            $table->string('category');          // FIXED: Added category column
             $table->string('image');
-            $table->text('description')->nullable();
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

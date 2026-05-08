@@ -19,7 +19,23 @@ class InquiryController extends Controller
         $inquiry = Inquiry::findOrFail($id);
         return view('admin.inquiries.show', compact('inquiry'));
     }
+public function destroy($id)
+{
+    // 1. Find the inquiry or fail if it doesn't exist
+    $inquiry = Inquiry::findOrFail($id);
 
+    // 2. Delete the associated photo from storage if it exists
+    if ($inquiry->site_photo_path) {
+        Storage::disk('public')->delete($inquiry->site_photo_path);
+    }
+
+    // 3. Delete the database record
+    $inquiry->delete();
+
+    // 4. Redirect back to the list with a success message
+    return redirect()->route('admin.inquiries-admin.index')
+        ->with('success', 'Inquiry dossier and associated files have been permanently deleted.');
+}
     public function submit(Request $request)
     {
         $validated = $request->validate([
@@ -42,7 +58,7 @@ class InquiryController extends Controller
             'project_details' => $validated['project_details'],
             'site_photo_path' => $photoPath
         ]);
-
+        
         return redirect()->back()->with('success', 'Inquiry submitted successfully!');
     }
 }

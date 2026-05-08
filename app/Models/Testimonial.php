@@ -13,6 +13,7 @@ class Testimonial extends Model
         'client_name',
         'client_position',
         'client_company',
+        'category', // <-- ADDED THIS LINE
         'content',
         'rating',
         'client_image',
@@ -20,7 +21,6 @@ class Testimonial extends Model
         'is_active',
         'order'
     ];
-
     protected $casts = [
         'rating' => 'integer',
         'is_featured' => 'boolean',

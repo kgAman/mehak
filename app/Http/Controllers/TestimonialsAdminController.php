@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+
 class TestimonialsAdminController extends Controller
 {
     public function index()
     {
-$testimonials = Testimonial::latest()->paginate(10);
+        $testimonials = Testimonial::latest()->paginate(10);
         return view('admin.testimonials.index', compact('testimonials'));
     }
 
@@ -25,6 +26,7 @@ $testimonials = Testimonial::latest()->paginate(10);
             'client_name' => 'required|string|max:255',
             'client_position' => 'nullable|string|max:100',
             'client_company' => 'nullable|string|max:255',
+            'category' => 'required|string|max:255', // <-- ADDED THIS LINE
             'content' => 'required|string',
             'rating' => 'nullable|integer|min:1|max:5',
             'client_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -64,6 +66,7 @@ $testimonials = Testimonial::latest()->paginate(10);
             'client_name' => 'required|string|max:255',
             'client_position' => 'nullable|string|max:100',
             'client_company' => 'nullable|string|max:255',
+            'category' => 'required|string|max:255', // <-- ADDED THIS LINE
             'content' => 'required|string',
             'rating' => 'nullable|integer|min:1|max:5',
             'client_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -72,7 +75,7 @@ $testimonials = Testimonial::latest()->paginate(10);
 
         if ($request->hasFile('client_image')) {
             if ($testimonial->client_image) {
-                \Storage::disk('public')->delete($testimonial->client_image);
+                Storage::disk('public')->delete($testimonial->client_image);
             }
             $imagePath = $request->file('client_image')->store('testimonials', 'public');
             $validated['client_image'] = $imagePath;
@@ -90,7 +93,7 @@ $testimonials = Testimonial::latest()->paginate(10);
         $testimonial = Testimonial::findOrFail($id);
         
         if ($testimonial->client_image) {
-            \Storage::disk('public')->delete($testimonial->client_image);
+            Storage::disk('public')->delete($testimonial->client_image);
         }
         
         $testimonial->delete();

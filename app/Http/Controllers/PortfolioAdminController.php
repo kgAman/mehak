@@ -24,6 +24,9 @@ class PortfolioAdminController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
+            'timeline'    => 'nullable|string|max:255', // Added
+            'crew'        => 'nullable|string|max:255', // Added
+            'status'      => 'nullable|string|max:255', // Added
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
             'project_url' => 'nullable|url',

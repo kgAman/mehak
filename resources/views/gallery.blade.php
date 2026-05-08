@@ -52,43 +52,31 @@
                     <h2 class="text-3xl font-black text-white font-['Montserrat',_sans-serif] uppercase tracking-widest">Project Gallery</h2>
                 </div>
 
+                @php
+                    // Get all unique categories currently in your database
+                    $uniqueCategories = $galleries->pluck('category')->unique();
+                @endphp
+
                 <div class="w-full flex flex-wrap justify-center gap-4 mb-12 border-b border-slate-800 pb-8">
                     <button @click="filter = 'all'" 
                             :class="filter === 'all' ? 'bg-amber-500 text-slate-900 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-slate-900 text-gray-400 border-slate-700 hover:border-amber-500 hover:text-amber-500'"
-                            class="px-8 py-3 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm border-2 rounded-sm transition-all duration-300 flex items-center gap-2">
-                        <i data-lucide="layers" class="w-4 h-4"></i> All Reports
+                            class="px-8 py-3 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-xs border-2 rounded-sm transition-all duration-300 flex items-center gap-2">
+                        <i data-lucide="layers" class="w-4 h-4"></i> All Projects
                     </button>
 
-                    <button @click="filter = 'commercial'" 
-                            :class="filter === 'commercial' ? 'bg-amber-500 text-slate-900 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-slate-900 text-gray-400 border-slate-700 hover:border-amber-500 hover:text-amber-500'"
-                            class="px-8 py-3 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm border-2 rounded-sm transition-all duration-300 flex items-center gap-2">
-                        <i data-lucide="building-2" class="w-4 h-4"></i> Commercial
+                    @foreach($uniqueCategories as $category)
+                    <button @click="filter = '{{ $category }}'" 
+                            :class="filter === '{{ $category }}' ? 'bg-amber-500 text-slate-900 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-slate-900 text-gray-400 border-slate-700 hover:border-amber-500 hover:text-amber-500'"
+                            class="px-8 py-3 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-xs border-2 rounded-sm transition-all duration-300 flex items-center gap-2">
+                        <i data-lucide="tag" class="w-4 h-4"></i> {{ $category }}
                     </button>
-
-                    <button @click="filter = 'residential'" 
-                            :class="filter === 'residential' ? 'bg-amber-500 text-slate-900 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]' : 'bg-slate-900 text-gray-400 border-slate-700 hover:border-amber-500 hover:text-amber-500'"
-                            class="px-8 py-3 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm border-2 rounded-sm transition-all duration-300 flex items-center gap-2">
-                        <i data-lucide="home" class="w-4 h-4"></i> Residential
-                    </button>
+                    @endforeach
                 </div>
 
-                @php
-                    $galleryItems = [
-                        ['type' => 'commercial', 'image' => 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1000&auto=format&fit=crop', 'title' => 'Structural Framing', 'location' => 'Richmond'],
-                        ['type' => 'residential', 'image' => 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=1000&auto=format&fit=crop', 'title' => 'Custom Cabinetry', 'location' => 'South Yarra'],
-                        ['type' => 'residential', 'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1000&auto=format&fit=crop', 'title' => 'Decking Restoration', 'location' => 'St Kilda'],
-                        ['type' => 'residential', 'image' => 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1000&auto=format&fit=crop', 'title' => 'Heritage Renovation', 'location' => 'Carlton'],
-                        ['type' => 'commercial', 'image' => 'https://images.unsplash.com/photo-1541888081631-f18c8f000b21?q=80&w=1000&auto=format&fit=crop', 'title' => 'Commercial Fitout', 'location' => 'CBD'],
-                        ['type' => 'residential', 'image' => 'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1000&auto=format&fit=crop', 'title' => 'Kitchen Overhaul', 'location' => 'Fitzroy'],
-                        ['type' => 'commercial', 'image' => 'https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?q=80&w=1000&auto=format&fit=crop', 'title' => 'Roofing & Trusses', 'location' => 'Brunswick'],
-                        ['type' => 'residential', 'image' => 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1000&auto=format&fit=crop', 'title' => 'Feature Walls', 'location' => 'Toorak']
-                    ];
-                @endphp
-
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    @foreach ($galleryItems as $index => $item)
+                    @forelse ($galleries as $gallery)
                     
-                    <div x-show="filter === 'all' || filter === '{{ $item['type'] }}'"
+                    <div x-show="filter === 'all' || filter === '{{ $gallery->category }}'"
                          x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 transform scale-90"
                          x-transition:enter-end="opacity-100 transform scale-100"
@@ -104,20 +92,21 @@
 
                         <div class="relative w-full h-full bg-black overflow-hidden border border-slate-800">
                             
-                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }} Repaired" 
+                            <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title ?? $gallery->category }}" 
                                  class="absolute inset-0 w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-700 ease-out z-0" />
                             
-                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }} Blueprint" 
+                            <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title ?? $gallery->category }} Blueprint" 
                                  class="absolute inset-0 w-full h-full object-cover grayscale brightness-50 contrast-150 sepia-[0.5] hue-rotate-[180deg] z-10 transition-opacity duration-500 ease-in-out group-hover:opacity-0" />
 
                             <div class="absolute inset-0 z-10 pointer-events-none opacity-20 group-hover:opacity-0 transition-opacity duration-300" 
                                  style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px);"></div>
 
                             <div class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md border-t-2 border-amber-500 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-20">
-                                <h4 class="text-white font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm">{{ $item['title'] }}</h4>
-                                <p class="text-amber-500 font-['Montserrat',_sans-serif] text-xs font-bold uppercase tracking-wider flex items-center justify-between mt-1">
-                                    <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> {{ $item['location'] }}</span>
-                                    <i data-lucide="{{ $item['type'] === 'commercial' ? 'building-2' : 'home' }}" class="w-4 h-4 text-slate-500"></i>
+                                <h4 class="text-white font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm">{{ $gallery->title ?? 'Site Project' }}</h4>
+                                
+                                <p class="text-amber-500 font-['Montserrat',_sans-serif] text-[10px] font-bold uppercase tracking-wider flex items-center justify-between mt-1">
+                                    <span class="flex items-center gap-1"><i data-lucide="tag" class="w-3 h-3"></i> {{ $gallery->category }}</span>
+                                    <i data-lucide="wrench" class="w-4 h-4 text-slate-500"></i>
                                 </p>
                             </div>
 
@@ -129,7 +118,13 @@
                         <div class="absolute bottom-1 right-1 w-1.5 h-1.5 bg-slate-600 rounded-full shadow-inner z-40"></div>
 
                     </div>
-                    @endforeach
+                    
+                    @empty
+                    <div class="col-span-full py-12 text-center flex flex-col items-center justify-center">
+                        <i data-lucide="image-off" class="w-12 h-12 text-slate-600 mb-4"></i>
+                        <p class="text-slate-400 font-mono text-sm uppercase tracking-widest">No gallery images found.</p>
+                    </div>
+                    @endforelse
                 </div>
 
             </div>

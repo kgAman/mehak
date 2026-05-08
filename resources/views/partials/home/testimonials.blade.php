@@ -18,35 +18,16 @@
     </div>
 
     @php
-        $testimonials = [
-            [
-                'id' => 'LOG-01',
-                'name' => 'Marcus T.',
-                'location' => 'Commercial Property, CBD',
-                'quote' => 'They came in to fix major water damage in our office lobby. The turnaround was incredibly fast, and the structural integrity is better than it was before the incident. Absolute professionals.',
-                'rating' => 5
-            ],
-            [
-                'id' => 'LOG-02',
-                'name' => 'Sarah L.',
-                'location' => 'Residential, St Kilda',
-                'quote' => 'Finding a reliable tradesman is tough, but this team showed up exactly on time, quoted fairly, and installed our new hybrid flooring flawlessly. The site was left spotless.',
-                'rating' => 5
-            ],
-            [
-                'id' => 'LOG-03',
-                'name' => 'David W.',
-                'location' => 'Warehouse, Dandenong',
-                'quote' => 'We needed immediate firewall installations to meet safety compliance. They handled the entire project without disrupting our operations. Highly recommend their lockup services.',
-                'rating' => 5
-            ]
-        ];
+        // Fetch the 3 most recent testimonials from the database. 
+        // If you only want to show ones marked as 'featured' in the admin panel, 
+        // change this to: \App\Models\Testimonial::where('is_featured', true)->latest()->take(3)->get();
+        $testimonials = \App\Models\Testimonial::latest()->take(3)->get();
     @endphp
 
     <div class="max-w-[96rem] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            @foreach ($testimonials as $index => $review)
+            @forelse ($testimonials as $review)
             
             <div class="group relative w-full h-96 bg-[#020617] rounded-sm overflow-hidden cursor-pointer shadow-[0_20px_50px_rgba(0,0,0,0.9)] border-2 border-slate-800">
                 
@@ -56,19 +37,20 @@
                     
                     <div class="relative z-10">
                         <div class="flex gap-1 mb-6">
-                            @for($i = 0; $i < $review['rating']; $i++)
+                            @for($i = 0; $i < $review->rating; $i++)
                                 <i data-lucide="star" class="w-5 h-5 text-amber-500 fill-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,1)]"></i>
                             @endfor
                         </div>
                         
                         <p class="text-amber-50 font-['Montserrat',_sans-serif] leading-relaxed text-sm md:text-base font-medium drop-shadow-[0_0_5px_rgba(245,158,11,0.5)]">
-                            "{{ $review['quote'] }}"
+                            "{{ $review->content }}"
                         </p>
 
                         <div class="mt-8 pt-6 border-t border-amber-900/50">
-                            <h4 class="text-amber-500 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm drop-shadow-[0_0_5px_rgba(245,158,11,0.8)]">{{ $review['name'] }}</h4>
+                            <h4 class="text-amber-500 font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-sm drop-shadow-[0_0_5px_rgba(245,158,11,0.8)]">{{ $review->client_name }}</h4>
+                            
                             <p class="text-amber-500/60 font-mono text-xs font-bold uppercase tracking-wider mt-1">
-                                {{ $review['location'] }}
+                                {{ $review->category ?? 'Client' }} @if($review->client_company) • {{ $review->client_company }} @endif
                             </p>
                         </div>
                     </div>
@@ -78,7 +60,7 @@
                 <div class="absolute top-0 left-0 w-full h-1/2 bg-slate-900 border-b-2 border-slate-950 flex flex-col items-center justify-end transform origin-top transition-transform duration-[600ms] ease-[cubic-bezier(0.85,0,0.15,1)] group-hover:-translate-y-full shadow-[0_10px_30px_rgba(0,0,0,0.9)] z-10">
                     <div class="absolute top-0 left-0 w-full h-2 opacity-50" style="background-image: repeating-linear-gradient(45deg, #f59e0b 0, #f59e0b 10px, #0f172a 10px, #0f172a 20px);"></div>
                     
-                    <span class="absolute top-4 left-6 text-slate-700 font-black font-mono text-xl opacity-30">{{ $review['id'] }}</span>
+                    <span class="absolute top-4 left-6 text-slate-700 font-black font-mono text-xl opacity-30">LOG-{{ str_pad($review->id, 2, '0', STR_PAD_LEFT) }}</span>
                     
                     <div class="w-1/3 h-1 bg-slate-950 rounded-t-md mb-0"></div>
                     <div class="w-1/4 h-2 bg-slate-800 rounded-t-md mb-0 border-t border-x border-slate-700"></div>
@@ -110,7 +92,13 @@
                 <div class="absolute bottom-3 right-3 w-3 h-3 bg-slate-800 rounded-full shadow-inner z-30 border border-slate-950"></div>
 
             </div>
-            @endforeach
+            
+            @empty
+            <div class="col-span-full py-12 text-center flex flex-col items-center justify-center">
+                <i data-lucide="message-square-off" class="w-12 h-12 text-slate-600 mb-4"></i>
+                <p class="text-slate-400 font-mono text-sm uppercase tracking-widest">No feedback records available yet.</p>
+            </div>
+            @endforelse
 
         </div>
     </div>

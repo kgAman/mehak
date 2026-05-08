@@ -20,9 +20,9 @@
             <div class="space-y-6">
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                        <i data-lucide="type" class="w-4 h-4"></i> Photo Title / Location
+                        <i data-lucide="type" class="w-4 h-4"></i> Photo Title / Location <span class="text-slate-600 text-[10px] ml-1 font-mono">(Optional)</span>
                     </label>
-                    <input type="text" name="title" value="{{ old('title') }}" required 
+                    <input type="text" name="title" value="{{ old('title') }}" 
                            class="block w-full bg-slate-950/50 border border-slate-700 text-white focus:border-amber-500 focus:ring-amber-500 rounded-sm px-4 py-3"
                            placeholder="e.g. Richmond Subframe Repair">
                 </div>
@@ -31,23 +31,30 @@
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <i data-lucide="tags" class="w-4 h-4"></i> Project Category
                     </label>
-                    <select name="category" class="block w-full bg-slate-950/50 border border-slate-700 text-white focus:border-amber-500 focus:ring-amber-500 rounded-sm px-4 py-3">
-                        <option value="Commercial" {{ old('category') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
-                        <option value="Residential" {{ old('category') == 'Residential' ? 'selected' : '' }}>Residential</option>
+                    <select id="category-select" name="category" onchange="toggleCustomCategory()" class="block w-full bg-slate-950/50 border border-slate-700 text-white focus:border-amber-500 focus:ring-amber-500 rounded-sm px-4 py-3 mb-3">
+                        <option value="Tile underlay and waterproofing" {{ old('category') == 'Tile underlay and waterproofing' ? 'selected' : '' }}>Tile underlay and waterproofing</option>
+                        <option value="Repairs" {{ old('category') == 'Repairs' ? 'selected' : '' }}>Repairs</option>
+                        <option value="Office repairs" {{ old('category') == 'Office repairs' ? 'selected' : '' }}>Office repairs</option>
+                        <option value="Internal cladding" {{ old('category') == 'Internal cladding' ? 'selected' : '' }}>Internal cladding</option>
+                        <option value="Decking and pergola projects" {{ old('category') == 'Decking and pergola projects' ? 'selected' : '' }}>Decking and pergola projects</option>
+                        <option value="custom" class="bg-amber-500/20 text-amber-500 font-bold">➕ Add New Category</option>
                     </select>
+
+                    <div id="custom-category-wrapper" class="hidden">
+                        <input type="text" id="custom-category-input" name="custom_category" value="{{ old('custom_category') }}" 
+                               class="block w-full bg-slate-950/50 border border-slate-700 text-amber-500 placeholder-slate-600 focus:border-amber-500 focus:ring-amber-500 rounded-sm px-4 py-3"
+                               placeholder="Type new category name here...">
+                    </div>
                 </div>
 
-                <!-- Visual File Upload Zone -->
                 <div>
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <i data-lucide="image-plus" class="w-4 h-4"></i> High-Res Image File
                     </label>
                     <div class="mt-1 relative flex justify-center px-6 pt-5 pb-6 border-2 border-slate-700 border-dashed rounded-sm bg-slate-950/30 hover:bg-slate-950/50 hover:border-amber-500 transition-all cursor-pointer h-64">
                         
-                        <!-- File Input -->
                         <input id="file-upload" name="image" type="file" accept="image/*" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" onchange="previewImage(event)">
                         
-                        <!-- Default Upload Prompt -->
                         <div id="upload-prompt" class="space-y-1 text-center pointer-events-none relative z-10 flex flex-col items-center justify-center h-full">
                             <i data-lucide="upload-cloud" class="mx-auto h-12 w-12 text-slate-500 mb-2"></i>
                             <div class="flex text-sm text-slate-400 justify-center">
@@ -57,7 +64,6 @@
                             <p class="text-xs text-slate-500 font-mono mt-2">PNG, JPG, WEBP</p>
                         </div>
 
-                        <!-- Image Preview Container (Hidden by default) -->
                         <div id="image-preview-container" class="hidden absolute inset-0 w-full h-full z-10 p-2 bg-slate-950 flex items-center justify-center">
                             <img id="image-preview" class="max-w-full max-h-full object-contain rounded-sm" />
                         </div>
@@ -75,22 +81,40 @@
         </form>
     </div>
 
-    <!-- Script to handle Image Preview -->
     <script>
+        // Image Preview Script
         function previewImage(event) {
             const input = event.target;
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Set the source of the image tag
                     document.getElementById('image-preview').src = e.target.result;
-                    // Hide the upload cloud text
                     document.getElementById('upload-prompt').classList.add('hidden');
-                    // Show the image preview container
                     document.getElementById('image-preview-container').classList.remove('hidden');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        // Custom Category Toggle Script
+        function toggleCustomCategory() {
+            const select = document.getElementById('category-select');
+            const wrapper = document.getElementById('custom-category-wrapper');
+            const input = document.getElementById('custom-category-input');
+
+            if (select.value === 'custom') {
+                wrapper.classList.remove('hidden');
+                input.required = true;
+            } else {
+                wrapper.classList.add('hidden');
+                input.required = false;
+                input.value = ''; // clear the field if they change their mind
+            }
+        }
+
+        // Run on page load in case of validation errors returning old input
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleCustomCategory();
+        });
     </script>
 </x-admin-layout>

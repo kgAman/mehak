@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class GalleryAdminController extends Controller
 {
@@ -31,10 +32,19 @@ class GalleryAdminController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'description' => 'nullable|string',
+            'title'           => 'nullable|string|max:255', // Made Optional
+            'category'        => 'required|string|max:255', // Added Category
+            'custom_category' => 'nullable|string|max:255', // Handled Custom Category
+            'image'           => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // Added webp, bumped to 5MB
         ]);
+
+        // If they selected "Custom", override the category with their custom text
+        if ($request->category === 'custom' && $request->filled('custom_category')) {
+            $validated['category'] = $request->custom_category;
+        }
+
+        // Clean up the array before saving to database
+        unset($validated['custom_category']);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('gallery', 'public');
@@ -73,15 +83,23 @@ class GalleryAdminController extends Controller
         $gallery = Gallery::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'description' => 'nullable|string',
+            'title'           => 'nullable|string|max:255',
+            'category'        => 'required|string|max:255',
+            'custom_category' => 'nullable|string|max:255',
+            'image'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
+
+        // If they selected "Custom", override the category with their custom text
+        if ($request->category === 'custom' && $request->filled('custom_category')) {
+            $validated['category'] = $request->custom_category;
+        }
+
+        unset($validated['custom_category']);
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($gallery->image) {
-                \Storage::disk('public')->delete($gallery->image);
+                Storage::disk('public')->delete($gallery->image);
             }
             $imagePath = $request->file('image')->store('gallery', 'public');
             $validated['image'] = $imagePath;
@@ -101,7 +119,7 @@ class GalleryAdminController extends Controller
         $gallery = Gallery::findOrFail($id);
         
         if ($gallery->image) {
-            \Storage::disk('public')->delete($gallery->image);
+            Storage::disk('public')->delete($gallery->image);
         }
         
         $gallery->delete();

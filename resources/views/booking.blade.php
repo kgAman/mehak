@@ -1,33 +1,9 @@
 <x-app-layout>
-    
     <style>
-        .bg-motion-metal {
-            background-size: 200% 200%;
-            animation: motion-gradient 8s ease infinite;
-        }
-        @keyframes motion-gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .hazard-tape {
-            background-image: repeating-linear-gradient(
-                -45deg, 
-                #f59e0b 0, 
-                #f59e0b 25px, 
-                #0f172a 25px, 
-                #0f172a 50px
-            );
-            background-size: 70px 70px;
-            animation: slide-tape 2s linear infinite;
-        }
-        @keyframes slide-tape {
-            from { background-position: 0 0; }
-            to { background-position: 70px 0; } 
-        }
-
-        /* Forces the browser's native calendar/clock popups into dark mode */
+        .bg-motion-metal { background-size: 200% 200%; animation: motion-gradient 8s ease infinite; }
+        @keyframes motion-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .hazard-tape { background-image: repeating-linear-gradient(-45deg, #f59e0b 0, #f59e0b 25px, #0f172a 25px, #0f172a 50px); background-size: 70px 70px; animation: slide-tape 2s linear infinite; }
+        @keyframes slide-tape { from { background-position: 0 0; } to { background-position: 70px 0; } }
         .dark-picker { color-scheme: dark; }
     </style>
 
@@ -64,6 +40,16 @@
                     </div>
                 </div>
 
+                @if(session('success'))
+                    <div class="relative z-10 mb-8 bg-green-500/10 border-2 border-green-500 p-6 rounded-sm flex items-center gap-4">
+                        <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+                        <div>
+                            <h4 class="text-green-500 font-bold uppercase tracking-widest text-sm">Booking Received</h4>
+                            <p class="text-green-400/80 text-sm mt-1">{{ session('success') }}</p>
+                        </div>
+                    </div>
+                @endif
+
                 <form action="{{ route('booking.submit') }}" method="POST" class="relative z-10 space-y-8">
                     @csrf 
                     
@@ -76,29 +62,20 @@
 
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Full Name</label>
-                                <input type="text" name="full_name" required class=" @error('full_name') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                <!-- Validation error message -->
-                                @error('full_name')
-                                    <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
+                                <input type="text" name="full_name" value="{{ old('full_name') }}" required class="@error('full_name') border-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner">
+                                @error('full_name') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                             </div>
                             
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Phone Number</label>
-                                <input type="tel" name="phone_number" required class=" @error('phone_number') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                <!-- Validation error message -->
-                                @error('phone_number')
-                                    <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
+                                <input type="tel" name="phone_number" value="{{ old('phone_number') }}" required class="@error('phone_number') border-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner">
+                                @error('phone_number') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Email Address</label>
-                                <input type="email" name="email_address" required class=" @error('email_address') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                <!-- Validation error message -->
-                                @error('email_address')
-                                    <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
+                                <input type="email" name="email_address" value="{{ old('email_address') }}" required class="@error('email_address') border-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner">
+                                @error('email_address') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
@@ -109,44 +86,32 @@
 
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Property Location / Suburb</label>
-                                <input type="text" name="property_location" required class=" @error('property_location') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                <!-- Validation error message -->
-                                @error('property_location')
-                                    <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
+                                <input type="text" name="property_location" value="{{ old('property_location') }}" required class="@error('property_location') border-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner">
+                                @error('property_location') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                             </div>
                             
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Preferred Date</label>
-                                    <input type="date" name="preferred_date" required class=" @error('preferred_date') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror dark-picker block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                    <!-- Validation error message -->
-                                    @error('preferred_date')
-                                        <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                                    @enderror
+                                    <input type="date" name="preferred_date" value="{{ old('preferred_date') }}" required class="@error('preferred_date') border-amber-500 @enderror dark-picker block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner">
+                                    @error('preferred_date') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Preferred Time</label>
-                                    <input type="time" name="preferred_time" required class=" @error('preferred_time') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror dark-picker block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                    <!-- Validation error message -->
-                                    @error('preferred_time')
-                                        <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                                    @enderror
+                                    <input type="time" name="preferred_time" value="{{ old('preferred_time') }}" required class="@error('preferred_time') border-amber-500 @enderror dark-picker block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner">
+                                    @error('preferred_time') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Service Required</label>
-                                <select name="service_required" class=" @error('service_required') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors">
-                                    <option class="bg-slate-800 text-white">General Consultation</option>
-                                    <option class="bg-slate-800 text-white">Damage & Insurance Repair</option>
-                                    <option class="bg-slate-800 text-white">Carpentry & Structural</option>
-                                    <option class="bg-slate-800 text-white">Other Maintenance</option>
+                                <select name="service_required" class="block w-full rounded-sm bg-slate-800 border-slate-600 text-white focus:border-amber-500 focus:ring-amber-500 shadow-inner">
+                                    <option value="General Consultation" {{ old('service_required') == 'General Consultation' ? 'selected' : '' }}>General Consultation</option>
+                                    <option value="Damage & Insurance Repair" {{ old('service_required') == 'Damage & Insurance Repair' ? 'selected' : '' }}>Damage & Insurance Repair</option>
+                                    <option value="Carpentry & Structural" {{ old('service_required') == 'Carpentry & Structural' ? 'selected' : '' }}>Carpentry & Structural</option>
+                                    <option value="Other Maintenance" {{ old('service_required') == 'Other Maintenance' ? 'selected' : '' }}>Other Maintenance</option>
                                 </select>
-                                <!-- Validation error message -->
-                                @error('service_required')
-                                    <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
+                                @error('service_required') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
@@ -154,12 +119,8 @@
 
                     <div class="pt-4 border-t border-slate-800">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest font-['Montserrat',_sans-serif] mb-2">Brief Details (Optional)</label>
-                        <textarea name="brief_details" rows="3" placeholder="Any specific instructions for the site visit?" class=" @error('brief_details') border-amber-500 focus:border-amber-500 focus:ring-amber-500 @enderror block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner transition-colors"></textarea>
-                        <!-- Validation error message -->
-                        @error('brief_details')
-                            <p class="text-amber-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    
+                        <textarea name="brief_details" rows="3" placeholder="Any specific instructions for the site visit?" class="block w-full rounded-sm bg-slate-800 border-slate-600 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-amber-500 shadow-inner">{{ old('brief_details') }}</textarea>
+                        @error('brief_details') <p class="text-amber-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                     </div>
                     
                     <button type="submit" class="w-full inline-flex justify-center items-center gap-3 rounded-sm bg-amber-500 px-8 py-4 text-lg font-black font-['Montserrat',_sans-serif] text-slate-900 shadow-[4px_4px_0px_0px_#475569] hover:shadow-[2px_2px_0px_0px_#475569] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 uppercase tracking-widest mt-6">

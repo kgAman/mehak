@@ -13,7 +13,6 @@
             </a>
         </div>
 
-        <!-- FIXED: Action points to 'update' route with the record ID -->
         <form action="{{ route('admin.gallery-admin.update', $gallery->id) }}" method="POST" enctype="multipart/form-data" class="bg-slate-900 border border-slate-700 shadow-2xl rounded-sm p-8 md:p-10 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1.5 opacity-80" style="background-image: repeating-linear-gradient(-45deg, #f59e0b 0, #f59e0b 10px, #0f172a 10px, #0f172a 20px);"></div>
             
@@ -21,36 +20,30 @@
             @method('PUT')
 
             <div class="flex flex-col md:flex-row gap-8">
-                <!-- Current Image / Replace Image Zone -->
                 <div class="w-full md:w-1/3">
                     <label class="block text-slate-500 font-mono text-xs uppercase tracking-widest mb-2">
                         Current Image (Click to change)
                     </label>
                     <div class="relative w-full aspect-square bg-black border-2 border-slate-700 hover:border-amber-500 transition-colors rounded-sm overflow-hidden group cursor-pointer">
                         
-                        <!-- Dynamic Image Source -->
                         <img id="image-preview" src="{{ asset('storage/' . $gallery->image) }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-40 transition-opacity">
                         
-                        <!-- Hover Overlay to indicate clickability -->
                         <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                             <i data-lucide="upload" class="w-8 h-8 text-white mb-2"></i>
                             <span class="text-xs font-bold text-white uppercase tracking-widest">Replace Photo</span>
                         </div>
 
-                        <!-- Hidden File Input covering the image -->
                         <input type="file" name="image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="previewNewImage(event)">
                     </div>
                     @error('image') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                 </div>
 
-                <!-- Edit Fields -->
                 <div class="w-full md:w-2/3 space-y-6">
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                            <i data-lucide="type" class="w-4 h-4"></i> Photo Title / Location
+                            <i data-lucide="type" class="w-4 h-4"></i> Photo Title / Location <span class="text-slate-600 text-[10px] ml-1 font-mono">(Optional)</span>
                         </label>
-                        <!-- Dynamic Value -->
-                        <input type="text" name="title" value="{{ old('title', $gallery->title) }}" required 
+                        <input type="text" name="title" value="{{ old('title', $gallery->title) }}" 
                                class="block w-full bg-slate-950/50 border border-slate-700 text-white focus:border-amber-500 focus:ring-amber-500 rounded-sm shadow-inner transition-colors px-4 py-3">
                         @error('title') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                     </div>
@@ -59,11 +52,34 @@
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                             <i data-lucide="tags" class="w-4 h-4"></i> Project Category
                         </label>
-                        <!-- FIXED: name="category" to match your DB. Dynamic selected states -->
-                        <select name="category" class="block w-full bg-slate-950/50 border border-slate-700 text-white focus:border-amber-500 focus:ring-amber-500 rounded-sm shadow-inner transition-colors px-4 py-3">
-                            <option value="Commercial" {{ old('category', $gallery->category) == 'Commercial' ? 'selected' : '' }}>Commercial</option>
-                            <option value="Residential" {{ old('category', $gallery->category) == 'Residential' ? 'selected' : '' }}>Residential</option>
+
+                        @php
+                            $standardCategories = [
+                                'Tile underlay and waterproofing',
+                                'Repairs',
+                                'Office repairs',
+                                'Internal cladding',
+                                'Decking and pergola projects'
+                            ];
+                            $currentCategory = old('category', $gallery->category);
+                            $isCustom = !in_array($currentCategory, $standardCategories) && !empty($currentCategory);
+                        @endphp
+
+                        <select id="category-select" name="category" onchange="toggleCustomCategory()" class="block w-full bg-slate-950/50 border border-slate-700 text-white focus:border-amber-500 focus:ring-amber-500 rounded-sm shadow-inner transition-colors px-4 py-3 mb-3">
+                            <option value="Tile underlay and waterproofing" {{ $currentCategory == 'Tile underlay and waterproofing' ? 'selected' : '' }}>Tile underlay and waterproofing</option>
+                            <option value="Repairs" {{ $currentCategory == 'Repairs' ? 'selected' : '' }}>Repairs</option>
+                            <option value="Office repairs" {{ $currentCategory == 'Office repairs' ? 'selected' : '' }}>Office repairs</option>
+                            <option value="Internal cladding" {{ $currentCategory == 'Internal cladding' ? 'selected' : '' }}>Internal cladding</option>
+                            <option value="Decking and pergola projects" {{ $currentCategory == 'Decking and pergola projects' ? 'selected' : '' }}>Decking and pergola projects</option>
+                            <option value="custom" {{ $isCustom ? 'selected' : '' }} class="bg-amber-500/20 text-amber-500 font-bold">➕ Add New Category</option>
                         </select>
+                        
+                        <div id="custom-category-wrapper" class="{{ $isCustom ? '' : 'hidden' }}">
+                            <input type="text" id="custom-category-input" name="custom_category" value="{{ $isCustom ? $currentCategory : old('custom_category') }}" 
+                                   class="block w-full bg-slate-950/50 border border-slate-700 text-amber-500 placeholder-slate-600 focus:border-amber-500 focus:ring-amber-500 rounded-sm px-4 py-3"
+                                   placeholder="Type new category name here...">
+                        </div>
+                        
                         @error('category') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -78,8 +94,8 @@
         </form>
     </div>
 
-    <!-- Script to swap out the image preview if they upload a new one -->
     <script>
+        // Image Preview Script
         function previewNewImage(event) {
             const input = event.target;
             if (input.files && input.files[0]) {
@@ -90,5 +106,26 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        // Custom Category Toggle Script
+        function toggleCustomCategory() {
+            const select = document.getElementById('category-select');
+            const wrapper = document.getElementById('custom-category-wrapper');
+            const input = document.getElementById('custom-category-input');
+
+            if (select.value === 'custom') {
+                wrapper.classList.remove('hidden');
+                input.required = true;
+            } else {
+                wrapper.classList.add('hidden');
+                input.required = false;
+                // Don't clear value immediately on edit form so they don't lose their data if they accidentally toggle
+            }
+        }
+
+        // Run on page load to ensure proper state
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleCustomCategory();
+        });
     </script>
 </x-admin-layout>

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('title');
             $table->string('category');
             $table->string('image');
+            $table->string('timeline')->nullable(); // Added
+            $table->string('crew')->nullable();     // Added
+            $table->string('status')->nullable();   // Added
             $table->text('description')->nullable();
             $table->string('project_url')->nullable();
             $table->date('completion_date')->nullable();

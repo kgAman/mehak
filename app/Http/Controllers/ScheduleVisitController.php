@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller; // Make sure this is here!
 use App\Models\ScheduledVisit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\VisitConfirmation;
+// use App\Mail\VisitConfirmation; // Uncomment when you set up emails
 
 class ScheduleVisitController extends Controller
 {
@@ -43,11 +44,18 @@ class ScheduleVisitController extends Controller
         return redirect()->back()->with('success', 'Your site visit has been scheduled successfully! We will contact you shortly to confirm.');
     }
 
-    public function updateStatus(Request $request, $id)
-    {
-        $visit = ScheduledVisit::findOrFail($id);
-        $visit->update(['status' => $request->status]);
-        
-        return response()->json(['success' => true]);
-    }
+public function updateStatus(Request $request, $id)
+{
+    $visit = ScheduledVisit::findOrFail($id);
+    
+    $request->validate([
+        'status' => 'required|in:pending,confirmed,completed,cancelled'
+    ]);
+
+    $visit->update(['status' => $request->status]);
+    
+    // Redirect to the list view with a success notification
+    return redirect()->route('admin.visits.index')
+        ->with('success', 'Status for ' . $visit->full_name . ' has been updated to ' . strtoupper($request->status));
+}
 }

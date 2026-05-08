@@ -85,21 +85,15 @@
             </div>
 
             @php
-                $testimonials = [
-                    ['id' => '104-COM', 'type' => 'commercial', 'name' => 'Marcus T.', 'role' => 'Facility Manager', 'location' => 'CBD Office Tower', 'rating' => 5, 'quote' => 'Exceptional response time. We needed structural framing repaired over the weekend to avoid operational downtime. They locked up the site and delivered flawlessly.'],
-                    ['id' => '293-RES', 'type' => 'residential', 'name' => 'Sarah L.', 'role' => 'Homeowner', 'location' => 'St Kilda', 'rating' => 5, 'quote' => 'The custom cabinetry work is flawless. They treated our home like a professional site, laying down heavy-duty protection before starting any demolition.'],
-                    ['id' => '088-COM', 'type' => 'commercial', 'name' => 'David W.', 'role' => 'Logistics Director', 'location' => 'Dandenong Warehouse', 'rating' => 5, 'quote' => 'Firewall installation was strictly up to code and passed inspection on the first run. Finding a crew this disciplined with industrial safety protocols is rare.'],
-                    ['id' => '412-RES', 'type' => 'residential', 'name' => 'Elena R.', 'role' => 'Property Investor', 'location' => 'Richmond', 'rating' => 4, 'quote' => 'Solid decking restoration. They stripped back the old weather-damaged timber and rebuilt the subframe perfectly. It feels like a brand new outdoor area.'],
-                    ['id' => '501-COM', 'type' => 'commercial', 'name' => 'James H.', 'role' => 'Retail Owner', 'location' => 'South Yarra', 'rating' => 5, 'quote' => 'Complete shop fit-out in under three weeks. The bulkhead designs were exactly to architectural spec, and the hybrid flooring looks premium.'],
-                    ['id' => '119-RES', 'type' => 'residential', 'name' => 'Michael B.', 'role' => 'Homeowner', 'location' => 'Fitzroy', 'rating' => 5, 'quote' => 'Insurance repair nightmare turned into a breeze. They handled the walls, ceiling, and painting after a major leak. Everything was incredibly streamlined.']
-                ];
+                // Fetch all testimonials dynamically
+                $testimonials = \App\Models\Testimonial::latest()->get();
             @endphp
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:pt-8">
                 
-                @foreach ($testimonials as $index => $review)
+                @forelse ($testimonials as $index => $review)
                 
-                <div x-show="filter === 'all' || filter === '{{ $review['type'] }}'"
+                <div x-show="filter === 'all' || filter === '{{ strtolower($review->category ?? '') }}'"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 translate-y-8"
                      x-transition:enter-end="opacity-100 translate-y-0"
@@ -120,32 +114,32 @@
                              style="background: repeating-linear-gradient(90deg, #fff, #fff 2px, transparent 2px, transparent 4px, #fff 4px, #fff 5px, transparent 5px, transparent 8px);">
                         </div>
 
-                        <div class="pl-8 relative z-10">
+                        <div class="pl-8 relative z-10 flex flex-col h-full min-h-[250px]">
                             
                             <div class="flex justify-between items-start mb-6 border-b border-slate-800 pb-4">
                                 <div>
-                                    <span class="text-amber-500 font-mono text-xs font-bold tracking-widest block mb-1">SN: {{ $review['id'] }}</span>
-                                    <h3 class="text-white font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-lg">{{ $review['name'] }}</h3>
+                                    <span class="text-amber-500 font-mono text-xs font-bold tracking-widest block mb-1">SN: TST-{{ str_pad($review->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                    <h3 class="text-white font-black font-['Montserrat',_sans-serif] uppercase tracking-widest text-lg">{{ $review->client_name }}</h3>
                                 </div>
                                 <div class="bg-slate-950 px-2 py-1 border border-slate-800 rounded-sm">
-                                    <i data-lucide="{{ $review['type'] === 'commercial' ? 'building-2' : 'home' }}" class="w-5 h-5 text-gray-500 group-hover:text-amber-500 transition-colors"></i>
+                                    <i data-lucide="{{ strtolower($review->category ?? '') === 'commercial' ? 'building-2' : 'home' }}" class="w-5 h-5 text-gray-500 group-hover:text-amber-500 transition-colors"></i>
                                 </div>
                             </div>
 
                             <div class="flex gap-1 mb-4">
                                 @for($i = 0; $i < 5; $i++)
-                                    <i data-lucide="star" class="w-4 h-4 {{ $i < $review['rating'] ? 'text-amber-500 fill-amber-500' : 'text-slate-700' }}"></i>
+                                    <i data-lucide="star" class="w-4 h-4 {{ $i < $review->rating ? 'text-amber-500 fill-amber-500' : 'text-slate-700' }}"></i>
                                 @endfor
                             </div>
 
-                            <p class="text-gray-400 font-['Montserrat',_sans-serif] text-sm leading-relaxed mb-6 group-hover:text-gray-200 transition-colors duration-300">
-                                "{{ $review['quote'] }}"
+                            <p class="text-gray-400 font-['Montserrat',_sans-serif] text-sm leading-relaxed mb-6 group-hover:text-gray-200 transition-colors duration-300 flex-grow">
+                                "{{ $review->content }}"
                             </p>
 
                             <div class="mt-auto pt-4 border-t border-slate-800">
-                                <p class="text-slate-500 font-mono text-xs font-bold uppercase tracking-wider block mb-1">{{ $review['role'] }}</p>
+                                <p class="text-slate-500 font-mono text-xs font-bold uppercase tracking-wider block mb-1">{{ $review->client_position ?? 'Client' }}</p>
                                 <p class="text-slate-400 font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-                                    <i data-lucide="map-pin" class="w-3 h-3 text-amber-500"></i> {{ $review['location'] }}
+                                    <i data-lucide="map-pin" class="w-3 h-3 text-amber-500"></i> {{ $review->client_company ?? 'Not Specified' }}
                                 </p>
                             </div>
 
@@ -158,7 +152,14 @@
 
                     </div>
                 </div>
-                @endforeach
+                
+                @empty
+                <div class="col-span-full py-20 text-center flex flex-col items-center justify-center">
+                    <i data-lucide="file-x-2" class="w-16 h-16 text-slate-700 mb-6"></i>
+                    <h3 class="text-2xl font-black text-white font-['Montserrat',_sans-serif] uppercase tracking-widest mb-2">No Reports Found</h3>
+                    <p class="text-slate-500 font-mono text-sm uppercase tracking-widest">Quality assurance logs are currently empty.</p>
+                </div>
+                @endforelse
 
             </div>
 

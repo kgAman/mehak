@@ -13,6 +13,9 @@ class Portfolio extends Model
         'title',
         'category',
         'image',
+        'timeline',    // Added
+        'crew',        // Added
+        'status',      // Added
         'description',
         'project_url',
         'completion_date',
